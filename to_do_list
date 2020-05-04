@@ -11,12 +11,35 @@
     (以後可能會有不同的files 但是在routes.rb只要取前面的名稱就好 _controller不用加)
     進入到controller一開始沒東西，一開始先自己加上個 def hello
 
-3.  app -> Controllers -> application_controller 
+3.  app -> Controllers -> application_controller.rb 
     render html: 'xxx'  傳回一個html檔案。但通常會有個放template的資料夾 app -> views -> layouts
 
 4.  現在建立一個新的controller
     project -> rails generate comtroller xxxx
-    這樣就在app -> comtroller中建立檔案
+    這樣就在app -> controllers中建立檔案
     也會在app -> views中建立資料夾放template，template的名稱通常是 xxx.html.erb
 
+5.  structure
+    * app -> assets 
+        存放static file 像是image, stylesheets (css files), application.css (把這邊的css 連結到 views中)
+        在views- > layouts -> application.html.erb中 <%= stylesheets_link_tag 'application', ...%>
+        就是連結到 application.css
+        同理。<%= javacript_pack_tag 'application', ...%>，就是連結到javascript中的application
+
+    * app -> contorller 
+        在controller.rb中常常看到 xxx < ApplicationController，這代表xxx由後者繼承所以不用把基本的功能重新定義，可以直接用
+        contorller.rb中要自行定義action給routes.rb來連結
+
+    * app -> helpers
+        views templates中會用到
+
+    * app -> views -> layouts -> application.html.erb
+        因為有 <%= yield %> 可以讓不同hemplate都可以連結正確
+
+    * bin 
+
+    *config
+    *congig -> routes.rb
+    
+    
 
