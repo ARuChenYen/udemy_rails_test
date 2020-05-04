@@ -1,0 +1,22 @@
+1.  MVC MODEL, View Controller
+    model: Resource in the app. Ex: User Post Atricle Stock...
+    View: Front end. Ex: home new friends profile...
+    Controller: like brain and backend. ex User_contorller
+
+2.  rails new project名稱
+    rails server
+    config -> routes.rb 網址路徑。類似django的urls.py
+    輸入 root 'application#hello' (controller檔案名稱#檔案中def名稱)
+    這代表當傳進來的網址是root時，解析並且啟動 app -> Controllers -> application_controller 
+    (以後可能會有不同的files 但是在routes.rb只要取前面的名稱就好 _controller不用加)
+    進入到controller一開始沒東西，一開始先自己加上個 def hello
+
+3.  app -> Controllers -> application_controller 
+    render html: 'xxx'  傳回一個html檔案。但通常會有個放template的資料夾 app -> views -> layouts
+
+4.  現在建立一個新的controller
+    project -> rails generate comtroller xxxx
+    這樣就在app -> comtroller中建立檔案
+    也會在app -> views中建立資料夾放template，template的名稱通常是 xxx.html.erb
+
+
