@@ -46,4 +46,10 @@
     當我們要到某個網址，其實就是sent request (code指令上為get，因為要get到使用者傳遞的網址)
     config -> routes get 'about', to: 'pages#about' (get到網址，傳遞到page的app中做about的動作，to: 'contorller_name#action')
     因此也要在controller -> pages_controller 中加上 def about (因為是傳到pages這個controller中做about動作)
+    另外到views -> pages 中建立template (about.html.erb)
+
+    題外話：vscode中讓.erb檔案直接可以方便寫html的方法。去設定搜尋 emmet
+    includeLanguage的setting.json 加入 "emmet.includeLanguages": {"*.erb": "html", "ruby": "html"}
+
+
 
