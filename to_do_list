@@ -15,7 +15,7 @@
     render html: 'xxx'  傳回一個html檔案。但通常會有個放template的資料夾 app -> views -> layouts
 
 4.  現在建立一個新的controller
-    project -> rails generate comtroller xxxx
+    project -> rails generate controller xxxx
     這樣就在app -> controllers中建立檔案
     也會在app -> views中建立資料夾放template，template的名稱通常是 xxx.html.erb
 
@@ -52,4 +52,73 @@
     includeLanguage的setting.json 加入 "emmet.includeLanguages": {"*.erb": "html", "ruby": "html"}
 
 
+7.  setup database
+    ex: articel table裏面有 id title description user_id
+    id: rails 自己會創立，user_id 使用者自行建立的
+    常用的指令 Create Update Read Delete
+    rails中用 ORM (Object Relational Mapper) (在ruby中又稱為 ActiveRecord )連結rail application code 跟 database，所以不用sql指令用ruby code
+    從rails中的ActiveRecord 轉換到SQL資料庫，都在model層中處理
+
+8.  用rails 提供的 scaffold創立 article database
+    rails generate scaffold Xxxx(resource to generate，在本次範例是Article)
+    rails generate scaffold Articel title:string description:text
+    這時在db -> migrate資料夾中已經自動建立rb檔案
+    按下 rails db:migrate 創立資料庫
+    article_controller, article_nodel, 都有scaffold預設的內容
+
+    routes中可以看到加上了一行 resources :articles
+    用rails routes 檢視
+    可以知道這個功能是直接連結到article_controller去接觸所有功能
+    而不是之前接觸單一controller的單一action
+
+9.  更加了解 table, migration article的功能與code (不經過scaffold)
+    Ⅰ.  先建立table articles (database)
+        rails generate migration create_articles (名稱可以自己設定)
+
+    Ⅱ.  前往db中的migration.rb檔案
+        因為名稱取的是CreateArticles，rails夠聰明知道我們要建立的是article
+        加入 t.string :title
+        t.text :description
+
+        做了更新要migrate db rails db:migrate
+
+        但是只有輸入這樣只會在一開始的時候建立，後續不能直接更新
+        有兩種方式 1. rollback  2. 建立新的migration
+        第1種砍掉重練很不推薦。尤其是多人合作時
+        第2種方式。建立新的migration再把新的的行列放進去
+
+        rails generate migration add_timestamps_to_articles
+        add_column為內建方法，新增列到已經存在的table中
+        add_column :table名稱(本案例中是article), 
+                   :要新增的attribute名稱(在本案例中只能用created_at與updated_at，這樣rails才會幫我們自動追蹤), 
+                   :data資料型態(本案例中是datetime),
+ 
+
+
+
+
+
+
+
+
+
+
+xx. deploy to heroku
+    本地的測試資料庫不會轉移。
+    安裝heroku
+    heroku login
+    heroku create Xxx 建立檔案位址與網址。
+    打開gem檔案，通常不會用sqlite3作為正式上線資料庫，而是用postgres，因此在gem檔案中新增
+    group :production do
+        gem: 'pg'
+    end
+    把 gem: 'sqlite3'從廣域的設定移動到 group :develope, :test do 中
+    改動過gem所以要重新bundle install，更新gem lock
+    bundle install --without production  
+    這是避免破壞掉本地端的設定，因為在本地端Rail.env 是設定在 "development"，所以用的還是sqlite3，只有到heroku上才會用postgres
+    git add .
+    git commit -m "xxx"
+    git push heroku master
+    heroku open -> 開啟網頁
+    heroku remane xxx -> repo改名，也會改變網址
 
