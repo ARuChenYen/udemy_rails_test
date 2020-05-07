@@ -53,7 +53,7 @@
 
 
 7.  setup database
-    ex: articel table裏面有 id title description user_id
+    ex: article table裏面有 id title description user_id
     id: rails 自己會創立，user_id 使用者自行建立的
     常用的指令 Create Update Read Delete
     rails中用 ORM (Object Relational Mapper) (在ruby中又稱為 ActiveRecord )連結rail application code 跟 database，所以不用sql指令用ruby code
@@ -61,7 +61,7 @@
 
 8.  用rails 提供的 scaffold創立 article database
     rails generate scaffold Xxxx(resource to generate，在本次範例是Article)
-    rails generate scaffold Articel title:string description:text
+    rails generate scaffold Article title:string description:text
     這時在db -> migrate資料夾中已經自動建立rb檔案
     按下 rails db:migrate 創立資料庫
     article_controller, article_nodel, 都有scaffold預設的內容
@@ -71,20 +71,22 @@
     可以知道這個功能是直接連結到article_controller去接觸所有功能
     而不是之前接觸單一controller的單一action
 
-9.  更加了解 table, migration article的功能與code (不經過scaffold)
+9.  在model中建立資料庫表格
     Ⅰ.  先建立table articles (database)
         rails generate migration create_articles (名稱可以自己設定)
 
     Ⅱ.  前往db中的migration.rb檔案
-        因為名稱取的是CreateArticles，rails夠聰明知道我們要建立的是article
+        因為名稱取的是CreateArticles，rails夠聰明知道我們要建立的是名稱為article的資料庫
         加入 t.string :title
         t.text :description
 
         做了更新要migrate db rails db:migrate
 
-        但是只有輸入這樣只會在一開始的時候建立，後續不能直接更新
+        以上步驟也可以用rails g model Article title:string description:text  一次完成
+
+    Ⅲ.  但是只有輸入這樣只會在一開始的時候建立，後續不能直接更新
         有兩種方式 1. rollback  2. 建立新的migration
-        第1種砍掉重練很不推薦。尤其是多人合作時
+        第1種砍掉重練很不推薦。尤其是多人合作時。指令為 rails db:rollback
         第2種方式。建立新的migration再把新的的行列放進去
 
         rails generate migration add_timestamps_to_articles
@@ -92,6 +94,54 @@
         add_column :table名稱(本案例中是article), 
                    :要新增的attribute名稱(在本案例中只能用created_at與updated_at，這樣rails才會幫我們自動追蹤), 
                    :data資料型態(本案例中是datetime),
+        更新一樣要migrate db rails db:migrate
+
+10. 用model去跟資料庫溝通
+    Ⅰ.  接續上一個步驟，因為資料庫名稱是article，因此model名稱也是article (model名稱要跟資料庫一樣)
+        先到app -> model中建立article.rb檔案
+        寫上最基本的兩行 class Article (model名稱，要大寫) < AppilcationRecord (表示從AppilcationRecord繼承)     end
+        只要這兩行就可以讓model的getter跟setter運作。最基本的運作工具是console
+    
+    Ⅱ.  使用rails console 建立新的資料
+        1.  先測試連線 Article.all 擷取所有articles資料庫的內容
+        2.  Article.create(title: "first article", description: "the description of first article")
+            這樣就可以建立一筆資料，但比較推薦的方式是用變數建立
+        3.  article = Article.new
+            article.title = "second article"
+            article.description = "description of second article"
+            不過這樣做還需要 article.save 去存進資料庫
+        4.  article = Article.new(title: "Third article", description: "The description of Third article")
+            這也是一種方法，但一樣需要.save存進去資料庫
+
+    Ⅲ.  使用console 更新與刪除資料
+        1.  Article.find(id) 用id找到特定資料
+            Article.first Article.last 可以找到第1與最後一筆資料
+            一樣最好用變數來存找到的資料 ex: article = Article.find(2)
+        2.  然後就可以用 變數.表格項目名稱 來修改內容
+            Ex: article.title = "xxxx",
+            這些變更只有在變數端有更動，因此修改完成後要 article.save 儲存到資料庫
+        3.  刪除資料用 變數.destyoy。不用save，會直接作用到資料庫
+            Ex: article.destroy
+
+    Ⅳ.  設定表格中項目的validation條件
+        因為model的article是個空的def，所以就算留空的title與description一樣可以存進去資料庫造成混亂
+        Ex: Article.new.save，就會存一筆標題與內容為nil資料
+        因此要設定可以存進去的條件。
+        1.  去app -> model -> article.rb
+            validates :title, presence: true  有標題才能存進去
+            validates :description, presence: true
+        2.  reload!  重新整理console以適用變更，不想重新開啟rails console的話
+            這時如果標題是空白的話，save就會變成false，用article.errors.full_messages 查看完整訊息
+        3.  但是只有這樣，標題只有一個字也是可以存進去，只要不要空白就好，這時可以設定最低的字數限制
+            validates :title, presence: true, length: { minimum:6, maximum: 100}
+            這個範例設定最低為6，最大100
+        4.  可以google activerecord validation 去找更多關於validation的設定
+
+11. display 資料，修改routes, controller and views
+        
+        drGA4$!$4PWquc
+
+
  
 
 
